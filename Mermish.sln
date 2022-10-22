@@ -9,6 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{7E53
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Mermish.ManualTesting", "Mermish.ManualTesting\Mermish.ManualTesting.fsproj", "{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D1532F0C-4E0A-450F-BE00-C2FA6E9846BC}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
