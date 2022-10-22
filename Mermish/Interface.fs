@@ -1,5 +1,5 @@
 ﻿namespace Mermish
 
 type IMermaidChart =
-    abstract member MermaidMarkdown : string
+    abstract member MermaidSyntax : string
 

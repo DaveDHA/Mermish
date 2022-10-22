@@ -4,14 +4,14 @@ namespace Mermish
 open System
 
 
-[<StructuredFormatDisplay("{MermaidMarkdown}")>]
+[<StructuredFormatDisplay("{MermaidSyntax}")>]
 type PieChart = {
     Title : string
     ShowData : bool
     Data : Map<string, decimal>
 }
     with        
-        member this.MermaidMarkdown =
+        member this.MermaidSyntax =
             seq {
                 yield sprintf "pie%s" (if this.ShowData then " showData" else "")
                 if not (String.IsNullOrWhiteSpace this.Title) then yield $"    title {this.Title}"
@@ -20,7 +20,7 @@ type PieChart = {
             }
             |> String.concat "\n"
 
-        interface IMermaidChart with member this.MermaidMarkdown = this.MermaidMarkdown
+        interface IMermaidChart with member this.MermaidSyntax = this.MermaidSyntax
         
 
 

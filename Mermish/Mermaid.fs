@@ -29,7 +29,7 @@ module private Html =
 
 
 module Mermaid = 
-    let private notImplemented = { new IMermaidChart with member this.MermaidMarkdown = "not implemented" }
+    let private notImplemented = { new IMermaidChart with member this.MermaidSyntax = "not implemented" }
 
     let FlowChart = notImplemented
 
@@ -53,7 +53,7 @@ module Mermaid =
 
     let ContextDiagram = notImplemented
 
-    let ToMarkdown item = (item :> IMermaidChart).MermaidMarkdown
+    let ToSyntax item = (item :> IMermaidChart).MermaidSyntax
 
 
     let WriteAllToFile path items =
@@ -62,7 +62,7 @@ module Mermaid =
                 yield Html.head
                 for item in items do
                     yield "        <div class='mermaid'>"
-                    yield item |> ToMarkdown |> Html.indentify 12
+                    yield item |> ToSyntax |> Html.indentify 12
                     yield "        </div>"
                 yield Html.tail
             }
