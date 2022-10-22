@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Utility.fs" />
+    <Compile Include="Interface.fs" />
+    <Compile Include="PieChart.fs" />
+    <Compile Include="Mermaid.fs" />
+  </ItemGroup>
+
+  <ItemGroup />
+
+</Project>

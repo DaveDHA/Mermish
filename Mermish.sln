@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Mermish", "Mermish\Mermish.fsproj", "{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{7E5352C8-B2E5-4EE2-9ABC-C6CC5F0F4395}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Mermish.ManualTesting", "Mermish.ManualTesting\Mermish.ManualTesting.fsproj", "{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DF2E2D5C-C2BB-4ACA-865A-36454CD4D936} = {7E5352C8-B2E5-4EE2-9ABC-C6CC5F0F4395}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A756E2D4-1E27-4CAE-8DFF-D7F7FA7FD16C}
+	EndGlobalSection
+EndGlobal
