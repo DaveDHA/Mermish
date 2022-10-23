@@ -8,9 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="PieChart.fs" />
-    <Compile Include="Mermaid.fs" />
-    <Compile Include="InteractiveSupport.fs" />
+    <Compile Include="ManualChart_Tests.fs" />
+    <Compile Include="PieChart_Tests.fs" />
+    <Compile Include="Mermaid_Tests.fs" />
+    <Compile Include="InteractiveSupport_Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

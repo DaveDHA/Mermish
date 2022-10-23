@@ -1,19 +1,17 @@
 #i "nuget: C:/Dev/Mermish/Mermish/bin/Debug"
-#r "nuget: Mermish, 0.0.0-dev"
+#r "nuget: Mermish, 0.0.1-dev"
 
 open Mermish
 open System.IO
 
 
-let pie = Mermaid.PieChart [
-    Title "Testing Odds"
-    PieSlice ("Success", 25)
-    PieSlice ("Failure", 75)
-]
-
-printfn "%A" pie
-
-let manual = Mermaid.ManualChart """
+let charts = [
+    Mermaid.PieChart [
+        Title "Testing Odds"
+        PieSlice ("Success", 25)
+        PieSlice ("Failure", 75)
+    ] :> IMermaidChart
+    Mermaid.ManualChart """
 graph TD
     run[Run this script] --> choice{Success?}
     choice -->|no| fail[Fix it!]    
@@ -22,10 +20,9 @@ graph TD
     result -->|no| fail
     result -->|yes| success[Celebrate!]
 """
-
-printfn "%A" manual
+]
 
 if not (Directory.Exists "./output") then Directory.CreateDirectory "./output" |> ignore
 
-Mermaid.WriteToFile "./output/JustPie.html" pie
-Mermaid.WriteAllToFile "./output/All.html" [ manual ; pie ]
+Mermaid.WriteToFile "./output/JustPie.html" charts[0]
+Mermaid.WriteAllToFile "./output/All.html" charts

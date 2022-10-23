@@ -29,8 +29,7 @@ module private Html =
 
 
 module Mermaid = 
-    [<Literal>]
-    let private notImplemented = """
+    let private notImplemented = ManualChart """
 journey
   title This chart type is not yet implemented
     Waiting for Implementation: 1
@@ -38,39 +37,37 @@ journey
     This finally gets implemented: 5
     """
 
-    let ManualChart str = { new IMermaidChart with member _.MermaidSyntax = str }
+    let ManualChart str = ManualChart str
     
-    let FlowChart = ManualChart notImplemented
+    let FlowChart = notImplemented
 
-    let SequenceDiagram = ManualChart notImplemented
+    let SequenceDiagram = notImplemented
 
-    let ClassDiagram = ManualChart notImplemented
+    let ClassDiagram = notImplemented
 
-    let StateDiagram = ManualChart notImplemented
+    let StateDiagram = notImplemented
 
-    let EntityRelationshipDiagram = ManualChart notImplemented
+    let EntityRelationshipDiagram = notImplemented
 
-    let UserJourney = ManualChart notImplemented
+    let UserJourney = notImplemented
 
-    let GanttChart = ManualChart notImplemented
+    let GanttChart = notImplemented
 
     let PieChart nodes = PieChart.AddAll nodes PieChart.Default
 
-    let RequirementDiagram = ManualChart notImplemented
+    let RequirementDiagram = notImplemented
 
-    let GitGraph = ManualChart notImplemented
+    let GitGraph = notImplemented
 
-    let ContextDiagram = ManualChart notImplemented
-
-    let SyntaxFor item = (item :> IMermaidChart).MermaidSyntax
+    let ContextDiagram = notImplemented
 
     let WriteAllToFile path items =
         let output = 
             seq {
                 yield Html.head
-                for item in items do
+                for item in (items |> Seq.cast<IMermaidChart>) do
                     yield "        <div class='mermaid'>"
-                    yield item |> SyntaxFor |> Html.indentify 12
+                    yield item.MermaidSyntax |> Html.indentify 12
                     yield "        </div>"
                 yield Html.tail
             }

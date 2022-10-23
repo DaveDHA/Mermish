@@ -39,8 +39,8 @@ let private html = """
 """
 
 
-let FormatChartForDotNetInteractive chart (writer : TextWriter) =
+let FormatChartForDotNetInteractive (chart : IMermaidChart) (writer : TextWriter) =
     html.Replace("[%mermish_guid%]", Guid.NewGuid().ToString().Replace("-",""))
-        .Replace("[%mermish_syntax%]", (Mermaid.SyntaxFor chart))
+        .Replace("[%mermish_syntax%]", chart.MermaidSyntax)
     |> writer.Write
         

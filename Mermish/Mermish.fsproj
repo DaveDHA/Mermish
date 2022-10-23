@@ -11,6 +11,7 @@
     <None Include="extension.dib" Pack="true" PackagePath="interactive-extensions/dotnet" />    
     <Compile Include="Utility.fs" />
     <Compile Include="IMermaidChart.fs" />
+    <Compile Include="ManualChart.fs" />
     <Compile Include="PieChart.fs" />
     <Compile Include="Mermaid.fs" />
     <Compile Include="InteractiveSupport.fs" />

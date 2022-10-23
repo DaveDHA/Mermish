@@ -79,6 +79,17 @@ let ``Supports string formatting``() =
 
 
 [<Fact>]
+let ``Supports ToString``() =
+    let chart = {
+        PieChart.Title = "Wow!"
+        ShowData = false
+        Data = [ "one", 1M ; "second item", 2.5M ] |> Map.ofSeq
+    }
+
+    chart.ToString() |> should equal (chart :> IMermaidChart).MermaidSyntax
+
+
+[<Fact>]
 let ``Can set Title``() =
     (Mermaid.PieChart [ Title "hello world" ]).Title
     |> should equal "hello world"

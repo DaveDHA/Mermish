@@ -20,6 +20,8 @@ type PieChart = {
             }
             |> String.concat "\n"
 
+        override this.ToString() = this.MermaidSyntax
+
         interface IMermaidChart with member this.MermaidSyntax = this.MermaidSyntax
         
 
