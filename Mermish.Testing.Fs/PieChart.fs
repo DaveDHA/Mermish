@@ -159,41 +159,58 @@ module Construction =
         )
         
 
+    let multipleNodeSets = [
+        [ 
+            Title "have a nice day"
+            ShowData
+            PieSlice ("rainbows", 100)
+            PieSlice ("unicorns", 100) 
+        ]
+        [ 
+            Title "have a terrible day"
+            PieSlices [ ("spiders", 100) ; ("snakes", 100) ]
+            PieSlice ("stubbed toes", 3) 
+        ]
+        [ Title "monkey" ; Title "Lion" ]   // overwrites title
+        [ ShowData ; HideData ; ShowData ]  // overwrites ShowData
+        [                                   // overwriting slice
+            PieSlice ("unique", 1)
+            PieSlice ("unique", 2)
+            PieSlice ("unique", 3) 
+        ] 
+        [                                   // overwriting slices
+            PieSlices [ ("u1", 1) ; ("u2", 1) ]
+            PieSlices [ ("u1", 2) ; ("u2", 2) ]
+            PieSlices [ ("u1", 3) ; ("u1", 3) ]
+            PieSlices [ ("u2", 4) ; ("u2", 4) ]
+        ]
+    ]
+
+
     [<Fact>]
     let ``Construction via Add is the same as basic construction``() =
-        [
-            [ 
-                Title "have a nice day"
-                ShowData
-                PieSlice ("rainbows", 100)
-                PieSlice ("unicorns", 100) 
-            ]
-            [ 
-                Title "have a terrible day"
-                PieSlices [ ("spiders", 100) ; ("snakes", 100) ]
-                PieSlice ("stubbed toes", 3) 
-            ]
-            [ Title "monkey" ; Title "Lion" ]   // overwrites title
-            [ ShowData ; HideData ; ShowData ]  // overwrites ShowData
-            [                                   // overwriting slice
-                PieSlice ("unique", 1)
-                PieSlice ("unique", 2)
-                PieSlice ("unique", 3) 
-            ] 
-            [                                   // overwriting slices
-                PieSlices [ ("u1", 1) ; ("u2", 1) ]
-                PieSlices [ ("u1", 2) ; ("u2", 2) ]
-                PieSlices [ ("u1", 3) ; ("u1", 3) ]
-                PieSlices [ ("u2", 4) ; ("u2", 4) ]
-            ]
-        ]
+        multipleNodeSets
         |> Seq.iter (fun nodes ->            
             for initialTake in 1..((Seq.length nodes) - 1) do
-                let c1 = Mermaid.PieChart nodes
-                let c2 = nodes |> Seq.take initialTake |> Mermaid.PieChart
-                let c3 = 
-                    nodes 
-                    |> Seq.skip initialTake
-                    |> Seq.fold (fun c n -> PieChart.Add n c) c2
-                c3 |> should equal c1
+                let expected = Mermaid.PieChart nodes
+                
+                nodes 
+                |> Seq.skip initialTake
+                |> Seq.fold (fun c n -> PieChart.Add n c) (nodes |> Seq.take initialTake |> Mermaid.PieChart)
+                |> should equal expected
+        )
+
+
+    [<Fact>]
+    let ``Construction via AddAll is the same as basic construction``() =
+        multipleNodeSets
+        |> Seq.iter (fun nodes ->            
+            for initialTake in 1..((Seq.length nodes) - 1) do
+                let expected = Mermaid.PieChart nodes
+
+                nodes
+                |> Seq.take initialTake
+                |> Mermaid.PieChart
+                |> PieChart.AddAll (nodes |> Seq.skip initialTake)
+                |> should equal expected
         )
