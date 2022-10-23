@@ -2,12 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.0.0-alpha</Version>
+	<Company>David Andrews</Company>
+	<Copyright>2022, David Andrews</Copyright>
+	<Description>Library to assist generating syntax for Mermaid.js charts and display charts within DotNet Interactive</Description>
+	<Product>Mermish</Product>
+	<Version>1.0.0-alpha</Version>
+	<Authors>David Andrews</Authors>
+	<PackageProjectUrl>https://github.com/DaveDHA/Mermish</PackageProjectUrl>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/DaveDHA/Mermish</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>mermaid;mermaid-js;dotnet;interactive;dotnet-interactive;fsharp;Jupyter;graph;chart</PackageTags>
+	<AssemblyVersion>1.0.0-alpha</AssemblyVersion>
+	<FileVersion>1.0.0-alpha</FileVersion>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="extension.dib" Pack="true" PackagePath="interactive-extensions/dotnet" />    
     <Compile Include="Utility.fs" />
     <Compile Include="IMermaidChart.fs" />
