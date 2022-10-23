@@ -44,14 +44,17 @@ module Formatting =
 """
 
 
-    let private format chart (writer : TextWriter) =
+    let Format chart (writer : TextWriter) =
         html.Replace("[%mermish_guid%]", Guid.NewGuid().ToString().Replace("-",""))
             .Replace("[%mermish_syntax%]", (Mermaid.ToSyntax chart))
         |> writer.Write
         
 
     let RegisterFormatter() =
-        Formatter.Register<IMermaidChart>(Action<_,_> format, "text/html")
+        Formatter.Register<IMermaidChart>(Action<_,_> Format, "text/html")
+
+    let SayHi() =
+        KernelInvocationContext.Current.DisplayAs("Hello from Mermish.", "text/markdown")
 
 
 
@@ -63,5 +66,5 @@ type KernelExtension() =
             
             Formatting.RegisterFormatter()
             
-            kernel.SendAsync(DisplayValue(new FormattedValue("text/markdown", $"Added Mermish to kernel {kernel.Name}.")))
+            kernel.SendAsync(DisplayValue(new FormattedValue("text/markdown", $"Added Mermish to kernel {kernel.Name} via extension in dll.")))
 

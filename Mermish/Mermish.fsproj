@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="extension.dib" Pack="true" PackagePath="interactive-extensions/dotnet" />    
     <Compile Include="Utility.fs" />
     <Compile Include="IMermaidChart.fs" />
     <Compile Include="PieChart.fs" />
@@ -15,10 +16,6 @@
     <Compile Include="KernelExtension.fs" />
   </ItemGroup>
 
-  <ItemGroup>
-	<None Include="$(OutputPath)/Mermish.dll" Pack="true" PackagePath="interactive-extensions/dotnet" />
-  </ItemGroup>
-	
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.Interactive" Version="1.0.0-beta.22504.6" />
     <PackageReference Include="Microsoft.DotNet.Interactive.Formatting" Version="1.0.0-beta.22504.6" />
