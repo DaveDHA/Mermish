@@ -7,11 +7,15 @@
 
   <ItemGroup>
     <Compile Include="Utility.fs" />
-    <Compile Include="Interface.fs" />
+    <Compile Include="IMermaidChart.fs" />
     <Compile Include="PieChart.fs" />
     <Compile Include="Mermaid.fs" />
+    <Compile Include="KernelExtension.fs" />
   </ItemGroup>
 
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.Interactive" Version="1.0.0-beta.22504.6" />
+    <PackageReference Include="Microsoft.DotNet.Interactive.Formatting" Version="1.0.0-beta.22504.6" />
+  </ItemGroup>
 
 </Project>
