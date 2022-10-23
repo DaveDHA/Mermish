@@ -2,6 +2,7 @@
 
 open Mermish
 open Microsoft.DotNet.Interactive
+open Microsoft.DotNet.Interactive.Commands
 open Microsoft.DotNet.Interactive.Formatting
 open System
 open System.IO
@@ -10,7 +11,8 @@ open System.Threading.Tasks
 
 module Formatting = 
 
-    let html = """
+    [<Literal>]
+    let private html = """
 <!-- Begin Mermish Content -->
 <div style="background-color:white">
     <script type="text/javascript">
@@ -42,18 +44,24 @@ module Formatting =
 """
 
 
-    let format chart (writer : TextWriter) =
+    let private format chart (writer : TextWriter) =
         html.Replace("[%mermish_guid%]", Guid.NewGuid().ToString().Replace("-",""))
             .Replace("[%mermish_syntax%]", (Mermaid.ToSyntax chart))
-        |> writer.Write        
+        |> writer.Write
+        
+
+    let RegisterFormatter() =
+        Formatter.Register<IMermaidChart>(Action<_,_> format, "text/html")
+
 
 
 type KernelExtension() =
                         
     interface IKernelExtension with
         
-        member this.OnLoadAsync _ =
+        member this.OnLoadAsync kernel =
             
-            Formatter.Register<PieChart>(Action<_,_> Formatting.format, "text/html")
-            Task.CompletedTask
+            Formatting.RegisterFormatter()
+            
+            kernel.SendAsync(DisplayValue(new FormattedValue("text/markdown", $"Added Mermish to kernel {kernel.Name}.")))
 
