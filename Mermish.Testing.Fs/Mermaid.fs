@@ -27,9 +27,12 @@ let charts = [
 
 [<Fact>]
 let ``Can write a chart to a file'``() =
-    charts[0] |> Mermaid.WriteToFile "CanWriteAChartToAFile.html"
+    let fname = "CanWriteAChartToAFile.html"
+    if (File.Exists fname) then File.Delete fname
+
+    charts[0] |> Mermaid.WriteToFile fname
     
-    let content = File.ReadAllText("CanWriteAChartToAFile.html")
+    let content = File.ReadAllText fname
 
     content |> should haveSubstring "pie"
     content |> should haveSubstring "title Testing Odds"
@@ -39,9 +42,12 @@ let ``Can write a chart to a file'``() =
 
 [<Fact>]
 let ``Can write all charts to a file'``() =
-    charts |> Mermaid.WriteAllToFile "CanWriteAllChartsToAFile.html"
+    let fname = "CanWriteAllChartsToAFile.html"
+    if (File.Exists fname) then File.Delete fname
+
+    charts |> Mermaid.WriteAllToFile fname
     
-    let content = File.ReadAllText("CanWriteAllChartsToAFile.html")
+    let content = File.ReadAllText fname 
 
     content |> should haveSubstring "pie"
     content |> should haveSubstring "title Testing Odds"
