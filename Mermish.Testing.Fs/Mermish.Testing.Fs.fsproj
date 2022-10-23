@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="PieChart.fs" />
     <Compile Include="Mermaid.fs" />
+    <Compile Include="InteractiveSupport.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

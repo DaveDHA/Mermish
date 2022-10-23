@@ -26,7 +26,7 @@ let charts = [
 
 
 [<Fact>]
-let ``Can write a chart to a file'``() =
+let ``Can write a chart to a file``() =
     let fname = "CanWriteAChartToAFile.html"
     if (File.Exists fname) then File.Delete fname
 
@@ -41,7 +41,7 @@ let ``Can write a chart to a file'``() =
 
 
 [<Fact>]
-let ``Can write all charts to a file'``() =
+let ``Can write all charts to a file``() =
     let fname = "CanWriteAllChartsToAFile.html"
     if (File.Exists fname) then File.Delete fname
 
