@@ -1,4 +1,4 @@
-﻿module Mermish.Testing.Fs.MerInteractiveSupport
+﻿module Mermish.Testing.Fs.InteractiveSupport
 
 open Xunit
 open FsUnit.Xunit
