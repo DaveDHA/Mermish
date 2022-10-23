@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManualTesting", "ManualTest
 		ManualTesting\WritingFiles.fsx = ManualTesting\WritingFiles.fsx
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{BF20C8B1-9F59-4D5B-A634-6E42ED9C5D5E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Mermish.Testing.Fs", "Mermish.Testing.Fs\Mermish.Testing.Fs.fsproj", "{6AB5D386-70B3-4F25-B3E2-8A53061602AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,9 +32,16 @@ Global
 		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9EAE2A9-1BE4-4E45-9171-2BA9D11A6C3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB5D386-70B3-4F25-B3E2-8A53061602AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB5D386-70B3-4F25-B3E2-8A53061602AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB5D386-70B3-4F25-B3E2-8A53061602AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB5D386-70B3-4F25-B3E2-8A53061602AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6AB5D386-70B3-4F25-B3E2-8A53061602AF} = {BF20C8B1-9F59-4D5B-A634-6E42ED9C5D5E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A756E2D4-1E27-4CAE-8DFF-D7F7FA7FD16C}
