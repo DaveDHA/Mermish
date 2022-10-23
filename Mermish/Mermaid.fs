@@ -55,7 +55,7 @@ module Mermaid =
 
     let ContextDiagram = notImplemented
 
-    let ToSyntax item = (item :> IMermaidChart).MermaidSyntax
+    let SyntaxFor item = (item :> IMermaidChart).MermaidSyntax
 
 
     let WriteAllToFile path items =
@@ -64,7 +64,7 @@ module Mermaid =
                 yield Html.head
                 for item in items do
                     yield "        <div class='mermaid'>"
-                    yield item |> ToSyntax |> Html.indentify 12
+                    yield item |> SyntaxFor |> Html.indentify 12
                     yield "        </div>"
                 yield Html.tail
             }
