@@ -25,26 +25,61 @@ type PieChart = {
 
 
 
+type PieNode<'t> =
+    | Title of string
+    | ShowData
+    | HideData
+    | PieSlice of (string * 't)
+    | PieSlices of (string * 't) seq
+
+
 module PieChart =
+    
     let Default = { Title = "" ; ShowData = false ; Data = Map.empty }
 
 
-    let private decimalize<'t> (data : (string * 't) seq) =
-        data
-        |> Seq.map (Tuple.mapSnd (fun x -> Decimal.Round(Convert.ToDecimal(x), 2)))
+    let private decimalize<'t> (x : 't) = Decimal.Round((Convert.ToDecimal x), 2)
+        
+
+    let private decimalizePairs<'t>  = Seq.map (Tuple.mapSnd decimalize)
+        
+
+    let private fromNode chart node =
+        match node with
+        | Title str -> { chart with Title = str }
+        | ShowData -> { chart with ShowData = true }
+        | HideData -> { chart with ShowData = false }
+        | PieSlice (label, number) -> { chart with Data = chart.Data |> Map.add label (decimalize number) }
+        | PieSlices items -> { chart with Data = chart.Data |> Map.addAll (decimalizePairs items)}
 
 
-    let WithTitle title pc = { pc with Title = title }
+    let Add node chart = fromNode chart node
+
+    let AddAll nodes chart = nodes |> Seq.fold fromNode chart
+
+    let FromNodes nodes = AddAll nodes Default
+
+    let AddSlices data chart = Add (PieSlices data) chart
+
+    let RemoveSlice key chart = { chart with Data = chart.Data |> Map.remove key }
+    
+
+    //let WithTitle title pc = { pc with Title = title }
+
+    
+    //let ShowData pc = { pc with ShowData = true }
 
 
-    let ShowData pc = { pc with ShowData = true }
+    //let HideData pc = { pc with ShowData = false }
 
 
-    let HideData pc = { pc with ShowData = false }
+    //let SetData data pc = { pc with Data = data |> decimalizePairs |> Map.ofSeq }
 
 
-    let SetData data pc = { pc with Data = data |> decimalize |> Map.ofSeq }
+    //let AppendData data pc = { pc with Data = pc.Data |> Map.addAll (decimalizePairs data) }
 
 
-    let AppendData data pc = { pc with Data = pc.Data |> Map.addAll (decimalize data) }
 
+
+
+    

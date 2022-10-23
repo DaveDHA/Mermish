@@ -29,34 +29,40 @@ module private Html =
 
 
 module Mermaid = 
+    [<Literal>]
+    let private notImplemented = """
+journey
+  title This chart type is not yet implemented
+    Waiting for Implementation: 1
+    Using a Manual Chart to fill the gaps : 3
+    This finally gets implemented: 5
+    """
+
     let ManualChart str = { new IMermaidChart with member _.MermaidSyntax = str }
+    
+    let FlowChart = ManualChart notImplemented
 
-    let private notImplemented = { new IMermaidChart with member this.MermaidSyntax = "not implemented" }
+    let SequenceDiagram = ManualChart notImplemented
 
-    let FlowChart = notImplemented
+    let ClassDiagram = ManualChart notImplemented
 
-    let SequenceDiagram = notImplemented
+    let StateDiagram = ManualChart notImplemented
 
-    let ClassDiagram = notImplemented
+    let EntityRelationshipDiagram = ManualChart notImplemented
 
-    let StateDiagram = notImplemented
+    let UserJourney = ManualChart notImplemented
 
-    let EntityRelationshipDiagram = notImplemented
+    let GanttChart = ManualChart notImplemented
 
-    let UserJourney = notImplemented
+    let PieChart nodes = PieChart.AddAll nodes PieChart.Default
 
-    let GanttChart = notImplemented
+    let RequirementDiagram = ManualChart notImplemented
 
-    let PieChart = PieChart.Default
+    let GitGraph = ManualChart notImplemented
 
-    let RequirementDiagram = notImplemented
-
-    let GitGraph = notImplemented
-
-    let ContextDiagram = notImplemented
+    let ContextDiagram = ManualChart notImplemented
 
     let SyntaxFor item = (item :> IMermaidChart).MermaidSyntax
-
 
     let WriteAllToFile path items =
         let output = 
@@ -73,6 +79,10 @@ module Mermaid =
 
 
     let WriteToFile path item = WriteAllToFile path [ item ]
+
+
+
+
 
         
     

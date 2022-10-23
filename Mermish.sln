@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManualTesting", "ManualTesting", "{18D26AEA-3936-49D0-88D8-7143B46F0D24}"
 	ProjectSection(SolutionItems) = preProject
-		ManualTesting\Mermish.ipynb = ManualTesting\Mermish.ipynb
+		ManualTesting\ManualChart.ipynb = ManualTesting\ManualChart.ipynb
+		ManualTesting\PieChart.ipynb = ManualTesting\PieChart.ipynb
+		ManualTesting\WritingFiles.fsx = ManualTesting\WritingFiles.fsx
 	EndProjectSection
 EndProject
 Global

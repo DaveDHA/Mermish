@@ -1,0 +1,29 @@
+
+<html>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+
+        <div class='mermaid'>
+            
+            graph TD
+                run[Run this script] --> choice{Success?}
+                choice -->|no| fail[Fix it!]    
+                choice -->|yes| examine[Examine output]
+                examine --> result{Output correct?}
+                result -->|no| fail
+                result -->|yes| success[Celebrate!]
+            
+        </div>
+        <div class='mermaid'>
+            pie
+                title Testing Odds
+                "Failure" : 75
+                "Success" : 25
+        </div>
+
+    </body>
+</html>
+
