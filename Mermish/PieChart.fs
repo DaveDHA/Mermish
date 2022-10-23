@@ -57,8 +57,6 @@ module PieChart =
 
     let AddAll nodes chart = nodes |> Seq.fold fromNode chart
 
-    let FromNodes nodes = AddAll nodes Default
-
     let AddSlices data chart = Add (PieSlices data) chart
 
     let RemoveSlice key chart = { chart with Data = chart.Data |> Map.remove key }
