@@ -1,8 +1,6 @@
 module Mermish.Testing.Fs.PieChart
 
-open System
 open Xunit
-open FsUnit
 open FsUnit.Xunit
 open Mermish
 
