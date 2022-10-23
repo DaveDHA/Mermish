@@ -29,6 +29,8 @@ module private Html =
 
 
 module Mermaid = 
+    let ManualChart str = { new IMermaidChart with member _.MermaidSyntax = str }
+
     let private notImplemented = { new IMermaidChart with member this.MermaidSyntax = "not implemented" }
 
     let FlowChart = notImplemented

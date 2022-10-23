@@ -1,18 +1,13 @@
-﻿namespace Mermish.Interactive
+﻿module Mermish.InteractiveSupport
 
 open Mermish
-open Microsoft.DotNet.Interactive
-open Microsoft.DotNet.Interactive.Commands
-open Microsoft.DotNet.Interactive.Formatting
 open System
 open System.IO
-open System.Threading.Tasks
 
 
-module Formatting = 
 
-    [<Literal>]
-    let private html = """
+[<Literal>]
+let private html = """
 <!-- Begin Mermish Content -->
 <div style="background-color:white">
     <script type="text/javascript">
@@ -44,27 +39,8 @@ module Formatting =
 """
 
 
-    let Format chart (writer : TextWriter) =
-        html.Replace("[%mermish_guid%]", Guid.NewGuid().ToString().Replace("-",""))
-            .Replace("[%mermish_syntax%]", (Mermaid.ToSyntax chart))
-        |> writer.Write
+let FormatChartForDotNetInteractive chart (writer : TextWriter) =
+    html.Replace("[%mermish_guid%]", Guid.NewGuid().ToString().Replace("-",""))
+        .Replace("[%mermish_syntax%]", (Mermaid.ToSyntax chart))
+    |> writer.Write
         
-
-    let RegisterFormatter() =
-        Formatter.Register<IMermaidChart>(Action<_,_> Format, "text/html")
-
-    let SayHi() =
-        KernelInvocationContext.Current.DisplayAs("Hello from Mermish.", "text/markdown")
-
-
-
-type KernelExtension() =
-                        
-    interface IKernelExtension with
-        
-        member this.OnLoadAsync kernel =
-            
-            Formatting.RegisterFormatter()
-            
-            kernel.SendAsync(DisplayValue(new FormattedValue("text/markdown", $"Added Mermish to kernel {kernel.Name} via extension in dll.")))
-
