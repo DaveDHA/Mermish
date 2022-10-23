@@ -5,22 +5,27 @@
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<Company>David Andrews</Company>
-	<Copyright>2022, David Andrews</Copyright>
-	<Description>Library to assist generating syntax for Mermaid.js charts and display charts within DotNet Interactive</Description>
+	<Copyright>Copyright (c) David Andrews 2022</Copyright>
+	<Description>Library to assist generating Mermaid.js syntax and displaying charts in DotNet Interactive</Description>
 	<Product>Mermish</Product>
-	<Version>1.0.0-alpha</Version>
+	<Version>1.0.0-alpha.1</Version>
 	<Authors>David Andrews</Authors>
 	<PackageProjectUrl>https://github.com/DaveDHA/Mermish</PackageProjectUrl>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/DaveDHA/Mermish</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>mermaid;mermaid-js;dotnet;interactive;dotnet-interactive;fsharp;Jupyter;graph;chart</PackageTags>
-	<AssemblyVersion>1.0.0-alpha</AssemblyVersion>
-	<FileVersion>1.0.0-alpha</FileVersion>
+	<AssemblyVersion>1.0.0-alpha.1</AssemblyVersion>
+	<FileVersion></FileVersion>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
