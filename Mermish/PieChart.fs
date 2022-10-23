@@ -62,21 +62,7 @@ module PieChart =
     let AddSlices data chart = Add (PieSlices data) chart
 
     let RemoveSlice key chart = { chart with Data = chart.Data |> Map.remove key }
-    
-
-    //let WithTitle title pc = { pc with Title = title }
-
-    
-    //let ShowData pc = { pc with ShowData = true }
-
-
-    //let HideData pc = { pc with ShowData = false }
-
-
-    //let SetData data pc = { pc with Data = data |> decimalizePairs |> Map.ofSeq }
-
-
-    //let AppendData data pc = { pc with Data = pc.Data |> Map.addAll (decimalizePairs data) }
+ 
 
 
 
