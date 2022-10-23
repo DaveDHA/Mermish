@@ -41,7 +41,7 @@ module PieChart =
     let private decimalize<'t> (x : 't) = Decimal.Round((Convert.ToDecimal x), 2)
         
 
-    let private decimalizePairs<'t>  = Seq.map (Tuple.mapSnd decimalize)
+    let private decimalizePairs<'t> (pairs : (string * 't) seq)  = pairs |> Seq.map (Tuple.mapSnd decimalize)
         
 
     let private fromNode chart node =
