@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Utility_Tests.fs" />
     <Compile Include="ManualChart_Tests.fs" />
     <Compile Include="PieChart_Tests.fs" />
     <Compile Include="Mermaid_Tests.fs" />
