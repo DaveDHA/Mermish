@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Manual testing output
-/ManualTesting/*
+/ManualTesting/output/*
