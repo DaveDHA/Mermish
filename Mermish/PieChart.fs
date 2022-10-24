@@ -2,21 +2,22 @@
 namespace Mermish
 
 open System
+open Mermish.Utility
 
 
 [<StructuredFormatDisplay("{MermaidSyntax}")>]
 type PieChart = {
     Title : string
     ShowData : bool
-    Data : Map<string, decimal>
+    Data : UMap<string, decimal>
 }
     with        
         member this.MermaidSyntax =
             seq {
                 yield sprintf "pie%s" (if this.ShowData then " showData" else "")
                 if not (String.IsNullOrWhiteSpace this.Title) then yield $"    title {this.Title}"
-                for kvp in this.Data do
-                    yield $"    \"{kvp.Key}\" : {kvp.Value}"
+                for (key, value) in this.Data do
+                    yield $"    \"{key}\" : {value}"
             }
             |> String.concat "\n"
 
@@ -37,7 +38,7 @@ type PieNode<'t> =
 
 module PieChart =
     
-    let Default = { Title = "" ; ShowData = false ; Data = Map.empty }
+    let Default = { Title = "" ; ShowData = false ; Data = UMap.empty }
 
 
     let private decimalize<'t> (x : 't) = Decimal.Round((Convert.ToDecimal x), 2)
@@ -51,8 +52,8 @@ module PieChart =
         | Title str -> { chart with Title = str }
         | ShowData -> { chart with ShowData = true }
         | HideData -> { chart with ShowData = false }
-        | PieSlice (label, number) -> { chart with Data = chart.Data |> Map.add label (decimalize number) }
-        | PieSlices items -> { chart with Data = chart.Data |> Map.addAll (decimalizePairs items)}
+        | PieSlice (label, number) -> { chart with Data = chart.Data |> UMap.add label (decimalize number) }
+        | PieSlices items -> { chart with Data = chart.Data |> UMap.addAll (decimalizePairs items)}
 
 
     let Add node chart = fromNode chart node
@@ -61,7 +62,7 @@ module PieChart =
 
     let AddSlices data chart = Add (PieSlices data) chart
 
-    let RemoveSlice key chart = { chart with Data = chart.Data |> Map.remove key }
+    let RemoveSlice key chart = { chart with Data = chart.Data |> UMap.remove key }
  
 
 

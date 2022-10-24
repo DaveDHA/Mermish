@@ -3,13 +3,14 @@ module Mermish.Testing.Fs.PieChart
 open Xunit
 open FsUnit.Xunit
 open Mermish
+open Mermish.Utility
 
 [<Fact>]
 let ``Syntax starts with 'pie'``() =
     ({
         PieChart.Title = "Wow!"
         ShowData = true
-        Data = Map.empty
+        Data = UMap.empty
     } :> IMermaidChart).MermaidSyntax
     |> should startWith "pie"
 
@@ -19,7 +20,7 @@ let ``Renders Title`` () =
     ({
         PieChart.Title = "Wow!"
         ShowData = true
-        Data = Map.empty
+        Data = UMap.empty
     } :> IMermaidChart).MermaidSyntax
     |> should haveSubstring "title Wow!"
 
@@ -29,7 +30,7 @@ let ``Empty Title`` () =
     ({
         PieChart.Title = ""
         ShowData = true
-        Data = Map.empty
+        Data = UMap.empty
     } :> IMermaidChart).MermaidSyntax
     |> should not' (haveSubstring "title")
 
@@ -39,7 +40,7 @@ let ``Renders ShowData``() =
     ({
         PieChart.Title = "Wow!"
         ShowData = true
-        Data = Map.empty
+        Data = UMap.empty
     } :> IMermaidChart).MermaidSyntax
     |> should haveSubstring "showData"
 
@@ -49,7 +50,7 @@ let ``Renders without ShowData``() =
     ({
         PieChart.Title = "Wow!"
         ShowData = false
-        Data = Map.empty
+        Data = UMap.empty
     } :> IMermaidChart).MermaidSyntax
     |> should not' (haveSubstring "showData")
 
@@ -60,7 +61,7 @@ let ``Renders all slices``() =
         ({
             PieChart.Title = "Wow!"
             ShowData = false
-            Data = [ "one", 1M ; "second item", 2.5M ] |> Map.ofSeq
+            Data = [ "one", 1M ; "second item", 2.5M ] |> UMap.ofSeq
         } :> IMermaidChart).MermaidSyntax
         
     output |> should haveSubstring "\"one\" : 1"
@@ -72,7 +73,7 @@ let ``Supports string formatting``() =
     let chart = {
         PieChart.Title = "Wow!"
         ShowData = false
-        Data = [ "one", 1M ; "second item", 2.5M ] |> Map.ofSeq
+        Data = [ "one", 1M ; "second item", 2.5M ] |> UMap.ofSeq
     }
 
     sprintf "%A" chart |> should equal (chart :> IMermaidChart).MermaidSyntax
@@ -83,7 +84,7 @@ let ``Supports ToString``() =
     let chart = {
         PieChart.Title = "Wow!"
         ShowData = false
-        Data = [ "one", 1M ; "second item", 2.5M ] |> Map.ofSeq
+        Data = [ "one", 1M ; "second item", 2.5M ] |> UMap.ofSeq
     }
 
     chart.ToString() |> should equal (chart :> IMermaidChart).MermaidSyntax
@@ -128,7 +129,7 @@ let ``Show/HideData overwrite``() =
 [<Fact>]
 let ``Can add PieSlice``() =
     (Mermaid.PieChart [ PieSlice ("jello", 1)]).Data
-    |> Map.toSeq
+    |> UMap.toSeq
     |> should contain ("jello", 1M)
 
 
@@ -136,7 +137,7 @@ let ``Can add PieSlice``() =
 let ``Can add multiple PieSlice items``() =
     let slices = 
         (Mermaid.PieChart [ PieSlice ("jello", 1) ; PieSlice ("banana", 2)]).Data
-        |> Map.toSeq
+        |> UMap.toSeq
 
     slices |> Seq.length |> should equal 2
     slices |> should contain ("jello", 1M)
@@ -147,7 +148,7 @@ let ``Can add multiple PieSlice items``() =
 let ``Can add multiple slices with one PieSlices node``() =
     let slices = 
         (Mermaid.PieChart [ PieSlices [ ("jello", 1) ; ("banana", 2) ]]).Data
-        |> Map.toSeq
+        |> UMap.toSeq
 
     slices |> Seq.length |> should equal 2
     slices |> should contain ("jello", 1M)
@@ -161,7 +162,7 @@ let ``Identically named slices overwrite``() =
         Mermaid.PieChart [ PieSlices [ ("jello", 1) ; ("jello", 2) ]]
     ]
     |> Seq.iter (fun chart ->
-        chart.Data |> Map.toSeq |> should contain ("jello", 2M)            
+        chart.Data |> UMap.toSeq |> should contain ("jello", 2M)            
     )
         
 
@@ -258,7 +259,7 @@ let ``Can construct with ints``() =
     |> should equal { 
         Title = ""
         ShowData = false
-        Data = [ ("one", 1M) ; ("two", 2M) ; ("three", 3M) ] |> Map.ofSeq 
+        Data = [ ("one", 1M) ; ("two", 2M) ; ("three", 3M) ] |> UMap.ofSeq 
     }
 
 
@@ -268,7 +269,7 @@ let ``Can construct with decimals``() =
     |> should equal { 
         Title = ""
         ShowData = false
-        Data = [ ("one", 1.40M) ; ("two", 2M) ; ("three", 3.88M) ] |> Map.ofSeq 
+        Data = [ ("one", 1.40M) ; ("two", 2M) ; ("three", 3.88M) ] |> UMap.ofSeq 
     }
 
 
@@ -278,7 +279,7 @@ let ``Can construct with floats``() =
     |> should equal { 
         Title = ""
         ShowData = false
-        Data = [ ("one", 1.40M) ; ("two", 2M) ; ("three", 3.88M) ] |> Map.ofSeq 
+        Data = [ ("one", 1.40M) ; ("two", 2M) ; ("three", 3.88M) ] |> UMap.ofSeq 
     }
 
 
@@ -288,5 +289,5 @@ let ``Can construct with strings``() =
     |> should equal { 
         Title = ""
         ShowData = false
-        Data = [ ("one", 1.40M) ; ("two", 2M) ; ("three", 3.88M) ] |> Map.ofSeq 
+        Data = [ ("one", 1.40M) ; ("two", 2M) ; ("three", 3.88M) ] |> UMap.ofSeq 
     }

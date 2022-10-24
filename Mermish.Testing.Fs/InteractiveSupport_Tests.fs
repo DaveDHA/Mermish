@@ -34,4 +34,4 @@ let ``Formatting for DotNet Interactive includes Mermaid JS``() =
     InteractiveSupport.FormatChartForDotNetInteractive chart writer
     let text = writer.ToString()
 
-    text |> should haveSubstring "https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min"
+    text |> should haveSubstring "https://cdn.jsdelivr.net/npm/mermaid@9.1.7/dist/mermaid.min"
