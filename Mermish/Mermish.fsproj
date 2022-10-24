@@ -8,21 +8,21 @@
 	<Copyright>Copyright (c) David Andrews 2022</Copyright>
 	<Description>Library to assist generating Mermaid.js syntax and displaying charts in DotNet Interactive</Description>
 	<Product>Mermish</Product>
-	<Version>1.0.0-alpha.1</Version>
+	<Version>1.0.0-alpha.2</Version>
 	<Authors>David Andrews</Authors>
 	<PackageProjectUrl>https://github.com/DaveDHA/Mermish</PackageProjectUrl>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/DaveDHA/Mermish</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>mermaid;mermaid-js;dotnet;interactive;dotnet-interactive;fsharp;Jupyter;graph;chart</PackageTags>
-	<AssemblyVersion>1.0.0-alpha.1</AssemblyVersion>
+	<AssemblyVersion>1.0.0-alpha.2</AssemblyVersion>
 	<FileVersion></FileVersion>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\Icon.png">
+    <None Include="..\Content\Icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
