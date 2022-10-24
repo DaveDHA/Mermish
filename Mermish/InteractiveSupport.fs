@@ -12,7 +12,7 @@ let private html = """
 <div style="background-color:white">
     <script type="text/javascript">
         renderMermish_[%mermish_guid%] = () => {
-            (require.config({ 'paths': { 'context': 'mermish', 'mermaidUri' : 'https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min' }}) || require)(['mermaidUri'], (mermaid) => {
+            (require.config({ 'paths': { 'context': 'mermish', 'mermaidUri' : 'https://cdn.jsdelivr.net/npm/mermaid@9.1.7/dist/mermaid.min' }}) || require)(['mermaidUri'], (mermaid) => {
                 let renderTarget = document.getElementById('mermishTarget_[%mermish_guid%]');
                 mermaid.mermaidAPI.render( 
                     'mermishScratch_[%mermish_guid%]', 
@@ -41,6 +41,6 @@ let private html = """
 
 let FormatChartForDotNetInteractive (chart : IMermaidChart) (writer : TextWriter) =
     html.Replace("[%mermish_guid%]", Guid.NewGuid().ToString().Replace("-",""))
-        .Replace("[%mermish_syntax%]", chart.MermaidSyntax)
+        .Replace("[%mermish_syntax%]", chart.MermaidSyntax.Trim())
     |> writer.Write
         
