@@ -1,4 +1,6 @@
-﻿namespace Mermish
+﻿module Mermish.GanttChart
+
+// UNTESTED
 
 open System
 open Mermish.Utility
@@ -8,6 +10,8 @@ type GanttDate = string
 type GanttId = string
 
 
+////////////////////////////////////////////////////////
+// Exclusion
 type Exclusion = 
 | Monday
 | Tuesday
@@ -21,37 +25,43 @@ type Exclusion =
 
 
 module Exclusion =
-    let GetLine items = 
+    let Render = function
+        | Date d -> d
+        | other -> $"{other}".ToLower()
+
+
+    let RenderAll items = 
         seq {
             if not (Seq.isEmpty items) then
                 yield
                     items 
-                    |> Seq.map (function
-                        | Date d -> d
-                        | other -> $"{other}".ToLower()
-                    )
+                    |> Seq.map Render
                     |> String.concat ", "
                     |> sprintf "    excludes %s"
         }
 
 
 
+////////////////////////////////////////////////////////
+// StartOption
 type StartOption = 
 | After of GanttId
-| Date of GanttDate
+| On of GanttDate
 | Default
 
 
 module StartOption =
-    let GetToken = function
+    let Render = function
         | After id -> Some $"after {id}"
-        | Date d -> Some d
+        | On d -> Some d
         | Default -> None
 
 
 
+////////////////////////////////////////////////////////
+// Duration
 type Duration = 
-| EndDate of GanttDate
+| Until of GanttDate
 | Weeks of int
 | Days of int
 | Hours of int
@@ -60,8 +70,8 @@ type Duration =
 
 
 module Duration =
-    let GetFragment = function
-        | EndDate d -> Some d
+    let Render = function
+        | Until d -> Some d
         | Weeks w -> Some (sprintf "%dw" w)
         | Days d -> Some (sprintf "%dd" d)
         | Hours h -> Some (sprintf "%dh" h)
@@ -69,106 +79,93 @@ module Duration =
         | Default -> None
 
 
+////////////////////////////////////////////////////////
+// TaskState
+type TaskState = Done | Active | Default
 
-type GanttState = Done | Active | Default
-
-module GanttState = 
-    let GetFragment = function
+module TaskState = 
+    let Render = function
         | Default -> None
         | other -> Some ($"{other}".ToLower())
 
 
 
-type GanttItem = {
+////////////////////////////////////////////////////////
+// Item
+type ItemType = Task | Milestone
+
+type Item = {
+    Id : GanttId
     Name : string
+    ItemType : ItemType
     IsCritical : bool
-    State : GanttState
-    Id : GanttId
-    Starts : StartOption
+    State : TaskState
+    StartOption : StartOption
     Duration : Duration
 }
 
-module GanttItem =
-    let Default = {
-        Name = ""
-        IsCritical = false
-        State = Default
-        Id = ""
-        Starts = StartOption.Default
-        Duration = Duration.Default
-    }
-
-
-    let GetLine item =
+module Item =        
+    let Render item =
         let fragments = 
             [
+                if item.ItemType = Milestone then Some "milestone"
                 if item.IsCritical then Some "crit" else None
-                GanttState.GetFragment item.State
+                TaskState.Render item.State
                 if (String.IsNullOrWhiteSpace item.Id) then None else Some item.Id
-                StartOption.GetToken item.Starts
-                Duration.GetFragment item.Duration
+                StartOption.Render item.StartOption
+                Duration.Render item.Duration
             ]
             |> Seq.choose id
             |> String.concat ", "
         
         $"    {item.Name} : {fragments}"
-        
 
 
-type Milestone = {
+    let RenderAll = Seq.map Render
+
+
+    let WithId id item = { item with Id = id }
+
+    let Critical item = { item with IsCritical = true }
+
+    let WithState state item = { item with State = state }
+
+    let Starts start item = { item with StartOption = start }
+
+    let Ends duration item = { item with Duration = duration }
+
+    
+
+////////////////////////////////////////////////////////
+// Section
+type Section = {
     Name : string
-    Id : GanttId
-    Starts : StartOption
-    Duration : Duration
+    Items : UMap<GanttId, Item>
 }
 
 
-module Milestone = 
-    let Default = {
-        Name = ""
-        Id = ""
-        Starts = StartOption.Default
-        Duration = Duration.Default
-    }
+module Section =
+
+    let Render section = 
+        seq {
+            yield $"    Section {section.Name}"
+            yield! section.Items |> UMap.values |> Item.RenderAll
+        }
 
 
-    let GetLine item =
-        let fragments = 
-            [
-                Some "milestone"
-                if (String.IsNullOrWhiteSpace item.Id) then None else Some item.Id
-                StartOption.GetToken item.Starts
-                Duration.GetFragment item.Duration
-            ]
-            |> Seq.choose id
-            |> String.concat ", "
-    
-        $"    {item.Name} : {fragments}"
-    
+    let RenderAll = Seq.collect Render
 
 
-
-type GanttRecord = 
-| Section of string
-| Item of GanttItem
-| Milestone of Milestone
-
-
-module GanttRecord =
-    let GetLine = function
-        | Section name -> $"    section {name}"
-        | Item x -> GanttItem.GetLine x
-        | Milestone x -> Milestone.GetLine x
-
-
-
+////////////////////////////////////////////////////////
+// GanttChart
 [<StructuredFormatDisplay("{MermaidSyntax}")>]
 type GanttChart = {
     Title : string
     DateFormat : string
     AxisFormat : string
-    Exclusions : Exclusion list
-    Records : GanttRecord list
+    Exclusions : Exclusion Set
+    Items : UMap<GanttId, Item>
+    Sections : UMap<string, Section>
 }
     with        
         member this.MermaidSyntax =
@@ -184,8 +181,9 @@ type GanttChart = {
                         "dateFormat", this.DateFormat
                         "axisFormat", this.AxisFormat
                     ]
-                yield! Exclusion.GetLine this.Exclusions
-                yield! this.Records |> Seq.map GanttRecord.GetLine
+                yield! this.Exclusions |> Exclusion.RenderAll
+                yield! this.Items |> UMap.values |> Item.RenderAll
+                yield! this.Sections |> UMap.values |> Section.RenderAll
             }
             |> String.concat "\n"
 
@@ -195,80 +193,57 @@ type GanttChart = {
         interface IMermaidChart with member this.MermaidSyntax = this.MermaidSyntax
 
 
-type MilestoneNode = 
-| Id of GanttId
-| Start of StartOption
-| Duration of Duration
+////////////////////////////////////////////////////////
+// GanttChart Module Members
+
+let Default = {
+    Title = ""
+    DateFormat = ""
+    AxisFormat = ""
+    Exclusions = Set.empty
+    Items = UMap.empty
+    Sections = UMap.empty
+}
 
 
-type ItemNode = 
-| Critical
-| State of GanttState
-| Id of GanttId
-| Start of StartOption
-| Duration of Duration
+let WithTitle title (chart : GanttChart) = { chart with Title = title }
+
+let WithDateFormat df chart = { chart with DateFormat = df }
+
+let WithAxisFormat af chart = { chart with AxisFormat = af }
+
+let AddExclusions exs chart = { chart with Exclusions = chart.Exclusions |> Set.addAll exs }
 
 
-type GanttNode =
-| Title of string
-| DateFormat of string
-| AxisFormat of string
-| Exclude of Exclusion list
-| Section of string
-| Milestone of string * (MilestoneNode list)
-| Item of string * (ItemNode list)
+let AddItems items (chart : GanttChart) =
+    { chart with Items = chart.Items |> UMap.addAll (items |> Seq.map (fun i -> i.Id, i)) }
 
 
-module GanttChart =
-    let Default = {
-        Title = ""
-        DateFormat = ""
-        AxisFormat = ""
-        Exclusions = List.empty
-        Records = List.empty
+let AddSection name items chart = 
+    let items' = items |> Seq.map (fun i -> i.Id, i) |> UMap.ofSeq
+    let section = { Section.Name = name ; Items = items' }
+    { chart with Sections = chart.Sections |> UMap.add section.Name section }
+
+
+let CreateItem itemType duration name = 
+    {
+        Item.Id = ""
+        Name = name
+        ItemType = itemType
+        IsCritical = false
+        State = TaskState.Default
+        StartOption = StartOption.Default
+        Duration = duration
     }
 
 
-    let private foldMilestoneNode (milestone : Milestone) node =
-        match node with
-        | MilestoneNode.Id x -> { milestone with Id = x }
-        | MilestoneNode.Start s -> { milestone with Starts = s}
-        | MilestoneNode.Duration d -> { milestone with Duration = d }
+let CreateTask = CreateItem Task 
+
+let CreateMilestone = CreateItem Milestone (Days 1)    
 
 
-    let private buildMilestone name nodes =
-        nodes
-        |> Seq.fold foldMilestoneNode { Milestone.Default with Name = name }
-        |> GanttRecord.Milestone
 
 
-    let private foldItemNode item node =
-        match node with
-        | Critical -> { item with IsCritical = true }
-        | State s -> { item with State = s }
-        | Id id -> { item with Id = id }
-        | Start s -> { item with Starts = s }
-        | Duration d -> { item with Duration = d }
-        
-
-    let private buildItem name nodes =
-        nodes
-        |> Seq.fold foldItemNode { GanttItem.Default with Name = name }
-        |> GanttRecord.Item
 
 
-    let private foldGanttNode (chart : GanttChart) node =
-        match node with
-        | Title t -> { chart with Title = t }
-        | DateFormat df -> { chart with DateFormat = df }
-        | AxisFormat af -> { chart with AxisFormat = af }
-        | Exclude exs -> { chart with Exclusions = chart.Exclusions @ exs }
-        | Section name -> { chart with Records = chart.Records @ [ GanttRecord.Section name ] }
-        | Milestone (name, nodes) -> { chart with Records = chart.Records @ [ buildMilestone name nodes ]}
-        | Item (name, nodes) -> { chart with Records = chart.Records @ [ buildItem name nodes ] }
-
-
-    let Add node chart = foldGanttNode chart node
-
-    let AddAll nodes chart = nodes |> Seq.fold foldGanttNode chart
 

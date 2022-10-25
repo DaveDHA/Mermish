@@ -4,12 +4,20 @@ open System.Collections
 open System.Collections.Generic
 
 
+// UNTESTED
 module Tuple =
     let mapFst mapper (a,b) = (mapper a, b)
 
     let mapSnd mapper (a, b) = (a, mapper b)
 
     
+
+// UNTESTED
+module Set = 
+    let addAll items set = 
+        items |> Seq.fold (fun set item -> Set.add item set) set
+
+
 
 // UMap is a Map that preserves the order of items added
 type UMap<'k,'v when 'k : equality> = private UMap of ('k * 'v) list    
@@ -66,3 +74,10 @@ module UMap =
         |> function
             | Some idx -> items |> List.removeAt idx |> UMap
             | None -> failwith $"Key {key} not found in the given UMap."
+
+
+    // UNTESTED
+    let keys (UMap items) = items |> Seq.map fst
+    
+    // UNTESTED
+    let values (UMap items) = items |> Seq.map snd

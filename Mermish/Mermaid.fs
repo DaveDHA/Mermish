@@ -51,7 +51,7 @@ journey
 
     let UserJourney = notImplemented
 
-    let GanttChart nodes = GanttChart.AddAll nodes GanttChart.Default
+    let GanttChart = GanttChart.Default
 
     let PieChart nodes = PieChart.AddAll nodes PieChart.Default
 
