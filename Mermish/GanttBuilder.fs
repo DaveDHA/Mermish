@@ -1,13 +1,16 @@
 ﻿namespace Mermish
 
+
+// UNTESTED
+
 open System
 open Mermish.Utility
 open Mermish.GanttChart
 
 module gantt =
-    type GanttChartNode = 
-    | Id of string
-
+    
+    ////////////////////////////////////////////////////////
+    // ItemBuilder   
     type ItemBuilder(itemType, name) =
         let defaultItem = {
             Item.Id = Guid.NewGuid().ToString()
@@ -16,7 +19,7 @@ module gantt =
             IsCritical = false
             State = TaskState.Default
             StartOption = StartOption.Default
-            Duration = Duration.Default
+            Duration = Days 1
         }
         
 
@@ -67,6 +70,8 @@ module gantt =
 
     let milestone name = ItemBuilder(Milestone, name)
 
+    ////////////////////////////////////////////////////////
+    // SectionBuilder    
     type SectionBuilder(name) =
         member _.Zero() = []
 
@@ -89,8 +94,135 @@ module gantt =
                 Items = items |> Seq.map (fun i -> i.Id, i) |> UMap.ofSeq
             }
         
+
+
     let section name = SectionBuilder(name)
 
 
+    ////////////////////////////////////////////////////////
+    // GanttPropertiesBuilder
+
+    type GanttProperties = {
+        Title : string
+        DateFormat : string
+        AxisFormat : string
+    }
+        with static member Default = { Title = "" ; DateFormat = "YYYY-MM-DD" ; AxisFormat = "" }
+
+    type GanttPropertiesBuilder() =
+
+        member _.Zero() = GanttProperties.Default
+        member _.Yield(()) = GanttProperties.Default
+
+        [<CustomOperation("title")>]
+        member _.Title((state : GanttProperties), title) = { state with Title = title }
+
+        [<CustomOperation("dateFormat")>]
+        member _.DateFormat((state : GanttProperties), df) = { state with DateFormat = df }
+
+        [<CustomOperation("axisFormat")>]
+        member _.AxisFormat((state : GanttProperties), af) = { state with AxisFormat = af }
+
+
+
+    let props = GanttPropertiesBuilder()
+
+
+    ////////////////////////////////////////////////////////
+    // ExclusionBuilder        
+    type ExclusionBuilder() =
+        member _.Zero() = []
+
+        member _.Yield(x : Exclusion) = [x]
+
+        member _.YieldFrom (x : Exclusion list) = x
+
+        member _.Combine((x : Exclusion list), y) = x @ y
+
+        member _.Delay f = f()
+
+        member _.For (items : 't seq, f : 't -> Exclusion seq) =
+            items
+            |> Seq.collect f
+            |> Seq.toList
+
+
+    let excludes = ExclusionBuilder()
         
 
+    ////////////////////////////////////////////////////////
+    // GanttChartBuilder        
+    type BuilderNode = 
+    | Item of Item 
+    | Section of Section 
+    | Properties of GanttProperties
+    | Exclusion of Exclusion 
+
+
+    type GanttChartBuilder() =
+        member _.Zero() = []
+
+        member _.Yield (x : Item) = [ Item x ]
+
+        member _.YieldFrom (x : Item list) = x |> List.map Item 
+
+        member _.Yield (x : Section) = [ Section x ]
+
+        member _.YieldFrom (x : Section list) = x |> List.map Section
+
+        member _.Yield (x : GanttProperties) = [ Properties x ]
+
+        member _.YieldFrom (x : GanttProperties list) = x |> List.map Properties
+
+        member _.Yield (x : Exclusion) = [ Exclusion x ]
+
+        member _.YieldFrom (x : Exclusion list) = x |> List.map Exclusion
+
+        member _.Combine((x : BuilderNode list), y) = x @ y
+
+        member _.Delay f = f()
+
+
+        member _.For (items : 't seq, f : 't -> BuilderNode seq) =
+            items
+            |> Seq.collect f
+            |> Seq.toList
+
+
+        member _.Run(nodes : BuilderNode list) =
+            let props = 
+                nodes 
+                |> Seq.choose (function | Properties p -> Some p | _ -> None)
+                |> Seq.tryLast
+                |> function
+                    | None -> GanttProperties.Default
+                    | Some p -> p
+
+            let excludes = 
+                nodes
+                |> Seq.choose (function | Exclusion ex -> Some ex | _ -> None)
+                |> Set.ofSeq
+
+            let items = 
+                nodes
+                |> Seq.choose (function | Item i -> Some i | _ -> None)
+                |> Seq.map (fun i -> i.Id, i)
+                |> UMap.ofSeq
+
+            let sections = 
+                nodes
+                |> Seq.choose (function | Section s -> Some s | _ -> None)
+                |> Seq.map (fun s -> s.Name, s)
+                |> UMap.ofSeq
+
+            {
+                GanttChart.Title = props.Title
+                DateFormat = props.DateFormat
+                AxisFormat = props.AxisFormat
+                Exclusions = excludes
+                Items = items
+                Sections = sections
+            }
+                
+    
+    let chart = GanttChartBuilder()
