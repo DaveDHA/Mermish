@@ -37,9 +37,10 @@
     <Compile Include="Utility.fs" />
     <Compile Include="IMermaidChart.fs" />
     <Compile Include="ManualChart.fs" />
-    <Compile Include="PieChart.fs" />
     <Compile Include="GanttChart.fs" />
     <Compile Include="GanttBuilder.fs" />
+    <Compile Include="PieChart.fs" />
+    <Compile Include="PieBuilder.fs" />
     <Compile Include="Mermaid.fs" />
     <Compile Include="InteractiveSupport.fs" />
   </ItemGroup>

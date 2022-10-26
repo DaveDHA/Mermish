@@ -1,7 +1,5 @@
 ﻿module Mermish.GanttChart
 
-// UNTESTED
-
 open System
 open Mermish.Utility
 
@@ -105,6 +103,17 @@ type Item = {
 }
 
 module Item =        
+    let Default() =
+        {
+            Id = Guid.NewGuid().ToString()
+            Item.Name = ""
+            ItemType = Task
+            IsCritical = false
+            State = TaskState.Default
+            StartOption = StartOption.Default
+            Duration = Days 1
+        }
+
     let Render item =
         let fragments = 
             [

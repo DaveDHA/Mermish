@@ -4,21 +4,19 @@ open System.Collections
 open System.Collections.Generic
 
 
-// UNTESTED
 module Set = 
     let addAll items set = 
         items |> Seq.fold (fun set item -> Set.add item set) set
 
 
 
-// UNTESTED
 module Seq =
     let tryPickBack chooser = Seq.rev >> Seq.tryPick chooser
 
     let pickBackWithDefault dv chooser = tryPickBack chooser >> Option.defaultValue dv
 
 
-// UNTESTED
+
 module Tuple =
     let mapFst mapper (a,b) = (mapper a, b)
 
@@ -83,8 +81,7 @@ module UMap =
             | None -> failwith $"Key {key} not found in the given UMap."
 
 
-    // UNTESTED
     let keys (UMap items) = items |> Seq.map fst
     
-    // UNTESTED
+
     let values (UMap items) = items |> Seq.map snd

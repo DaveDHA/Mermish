@@ -1,9 +1,6 @@
 ﻿namespace Mermish
 
 
-// UNTESTED
-
-open System
 open Mermish.Utility
 open Mermish.GanttChart
 
@@ -12,17 +9,6 @@ module gantt =
     ////////////////////////////////////////////////////////
     // ItemBuilder   
     type ItemBuilder(itemType, name) =
-        let defaultItem = {
-            Item.Id = Guid.NewGuid().ToString()
-            Item.Name = name
-            ItemType = itemType
-            IsCritical = false
-            State = TaskState.Default
-            StartOption = StartOption.Default
-            Duration = Days 1
-        }
-        
-
         let duration ctor (state, (x : int)) = { state with Duration = (ctor x) }
 
 
@@ -36,8 +22,8 @@ module gantt =
             { state with State = finalState }
 
 
-        member _.Zero() = defaultItem
-        member _.Yield(()) = defaultItem
+        member _.Zero() = { GanttChart.Item.Default() with Name = name; ItemType = itemType }
+        member _.Yield(()) = { GanttChart.Item.Default() with Name = name; ItemType = itemType }
 
         [<CustomOperation("id")>]
         member _.Id((state : Item), id) = { state with Id = id }
@@ -175,7 +161,7 @@ module gantt =
         member _.Delay f = f()
 
 
-        member _.For (items : 't seq, f : 't -> BuilderNode seq) =
+        member _.For (items, f) =
             items
             |> Seq.collect f
             |> Seq.toList
