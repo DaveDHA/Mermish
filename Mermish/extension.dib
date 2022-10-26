@@ -7,4 +7,6 @@ open Microsoft.DotNet.Interactive.Formatting
 open System
 
 Formatter.Register<IMermaidChart>(Action<_,_> FormatChartForDotNetInteractive, "text/html")
+Formatter.Register<IMermaidChartDebug>(Action<_,_> FormatChartForDotNetInteractiveDebug, "text/html")
 KernelInvocationContext.Current.DisplayAs("Mermish formatter added from extension script.", "text/markdown")
+

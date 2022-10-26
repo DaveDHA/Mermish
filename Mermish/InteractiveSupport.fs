@@ -44,3 +44,14 @@ let FormatChartForDotNetInteractive (chart : IMermaidChart) (writer : TextWriter
         .Replace("[%mermish_syntax%]", chart.MermaidSyntax.Trim())
     |> writer.Write
         
+
+let FormatChartForDotNetInteractiveDebug (chart : IMermaidChartDebug) (writer : TextWriter) =
+    writer.WriteLine"<!-- Mermish Debug -->"
+    writer.WriteLine("<pre style='margin-bottom: 10px'>")
+    System.Net.WebUtility.HtmlEncode(chart.Chart.MermaidSyntax, writer)
+    //writer.WriteLine(chart.Chart.MermaidSyntax.Replace("\n", "<br/>\n").Replace(" ", "&nbsp;"))
+    writer.WriteLine("</pre>")
+    writer.WriteLine"<!-- End Mermish Debug -->"
+    FormatChartForDotNetInteractive chart.Chart writer
+    
+    

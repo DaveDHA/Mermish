@@ -77,6 +77,9 @@ journey
 
     let WriteToFile path item = WriteAllToFile path [ item ]
 
+    let InteractiveDebuggable chart = { new IMermaidChartDebug with member _.Chart = (chart :> IMermaidChart) }
+
+
 
 
 
