@@ -5,19 +5,26 @@ open System.Collections.Generic
 
 
 // UNTESTED
+module Set = 
+    let addAll items set = 
+        items |> Seq.fold (fun set item -> Set.add item set) set
+
+
+
+// UNTESTED
+module Seq =
+    let tryPickBack chooser = Seq.rev >> Seq.tryPick chooser
+
+    let pickBackWithDefault dv chooser = tryPickBack chooser >> Option.defaultValue dv
+
+
+// UNTESTED
 module Tuple =
     let mapFst mapper (a,b) = (mapper a, b)
 
     let mapSnd mapper (a, b) = (a, mapper b)
 
     
-
-// UNTESTED
-module Set = 
-    let addAll items set = 
-        items |> Seq.fold (fun set item -> Set.add item set) set
-
-
 
 // UMap is a Map that preserves the order of items added
 type UMap<'k,'v when 'k : equality> = private UMap of ('k * 'v) list    

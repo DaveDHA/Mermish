@@ -25,32 +25,52 @@ module gantt =
 
         let duration ctor (state, (x : int)) = { state with Duration = (ctor x) }
 
+
+        let adjustState taskState x state =
+            let finalState =
+                match x, state.State with
+                | false, s when s = taskState -> TaskState.Default
+                | true, _ -> taskState
+                | _, original -> original
+            
+            { state with State = finalState }
+
+
         member _.Zero() = defaultItem
         member _.Yield(()) = defaultItem
 
         [<CustomOperation("id")>]
-        member _.Name((state : Item), id) = { state with Id = id }
+        member _.Id((state : Item), id) = { state with Id = id }
 
-        [<CustomOperation("critical")>]
-        member _.Critical(state) = { state with IsCritical = true }
+        [<CustomOperation("isCritical")>]
+        member _.IsCritical(state) = { state with IsCritical = true }
 
-        [<CustomOperation("activeState")>]
-        member _.Active(state) = { state with State = Active }
+        [<CustomOperation("isCritical")>]
+        member _.IsCritical(state, x) = { state with IsCritical = x }
 
-        [<CustomOperation("doneState")>]
-        member _.Done(state) = { state with State = Done }
+        [<CustomOperation("isActive")>]
+        member _.IsActive(state) = { state with State = Active }
 
-        [<CustomOperation("startsAfter")>]
-        member _.StartsAfter(state, id) = { state with StartOption = After id }
+        [<CustomOperation("isActive")>]
+        member _.IsActive(state, x) = adjustState Active x state
 
-        [<CustomOperation("startsAfter")>]
-        member _.StartsAfter(state, target) = { state with StartOption = After target.Id }
+        [<CustomOperation("isDone")>]
+        member _.IsDone(state) = { state with State = Done }
 
-        [<CustomOperation("startsOn")>]
-        member _.StartsOn(state, date) = { state with StartOption = On date }
+        [<CustomOperation("isDone")>]
+        member _.IsDone((state, x)) = adjustState Done x state
 
-        [<CustomOperation("endsAfter")>]
-        member _.EndsAfter(state, date) = { state with Duration = Until date }
+        [<CustomOperation("startAfter")>]
+        member _.StartAfter(state, id) = { state with StartOption = After id }
+
+        [<CustomOperation("startAfter")>]
+        member _.StartAfter(state, target) = { state with StartOption = After target.Id }
+
+        [<CustomOperation("startAt")>]
+        member _.StartAt(state, date) = { state with StartOption = At date }
+
+        [<CustomOperation("endAt")>]
+        member _.EndAt(state, date) = { state with Duration = EndAt date }
         
         [<CustomOperation("durationWeeks")>]
         member _.DurationWeeks(state, x) = duration Weeks (state, x)
@@ -98,56 +118,6 @@ module gantt =
 
     let section name = SectionBuilder(name)
 
-
-    ////////////////////////////////////////////////////////
-    // GanttPropertiesBuilder
-
-    type GanttProperties = {
-        Title : string
-        DateFormat : string
-        AxisFormat : string
-    }
-        with static member Default = { Title = "" ; DateFormat = "YYYY-MM-DD" ; AxisFormat = "" }
-
-    type GanttPropertiesBuilder() =
-
-        member _.Zero() = GanttProperties.Default
-        member _.Yield(()) = GanttProperties.Default
-
-        [<CustomOperation("title")>]
-        member _.Title((state : GanttProperties), title) = { state with Title = title }
-
-        [<CustomOperation("dateFormat")>]
-        member _.DateFormat((state : GanttProperties), df) = { state with DateFormat = df }
-
-        [<CustomOperation("axisFormat")>]
-        member _.AxisFormat((state : GanttProperties), af) = { state with AxisFormat = af }
-
-
-
-    let props = GanttPropertiesBuilder()
-
-
-    ////////////////////////////////////////////////////////
-    // ExclusionBuilder        
-    type ExclusionBuilder() =
-        member _.Zero() = []
-
-        member _.Yield(x : Exclusion) = [x]
-
-        member _.YieldFrom (x : Exclusion list) = x
-
-        member _.Combine((x : Exclusion list), y) = x @ y
-
-        member _.Delay f = f()
-
-        member _.For (items : 't seq, f : 't -> Exclusion seq) =
-            items
-            |> Seq.collect f
-            |> Seq.toList
-
-
-    let excludes = ExclusionBuilder()
         
 
     ////////////////////////////////////////////////////////
@@ -155,8 +125,34 @@ module gantt =
     type BuilderNode = 
     | Item of Item 
     | Section of Section 
-    | Properties of GanttProperties
-    | Exclusion of Exclusion 
+    | Title of string
+    | DateFormat of string
+    | AxisFormat of string
+    | Exclusion of Exclusion
+
+    let title = Title
+
+    let dateFormat = DateFormat
+
+    let axisFormat = AxisFormat
+
+    let excludeMondays = Exclusion Monday
+
+    let excludeTuesdays = Exclusion Tuesday
+
+    let excludeWednesdays = Exclusion Wednesday
+
+    let excludeThursdays = Exclusion Thursday
+
+    let excludeFridays = Exclusion Friday
+
+    let excludeSaturdays = Exclusion Saturday
+
+    let excludeSundays = Exclusion Sunday
+
+    let excludeWeekends = Exclusion Weekends
+
+    let excludeDate = Date >> Exclusion
 
 
     type GanttChartBuilder() =
@@ -164,19 +160,15 @@ module gantt =
 
         member _.Yield (x : Item) = [ Item x ]
 
-        member _.YieldFrom (x : Item list) = x |> List.map Item 
+        member _.YieldFrom (x : Item seq) = x |> Seq.map Item |> Seq.toList
 
         member _.Yield (x : Section) = [ Section x ]
 
-        member _.YieldFrom (x : Section list) = x |> List.map Section
+        member _.YieldFrom (x : Section seq) = x |> Seq.map Section |> Seq.toList
 
-        member _.Yield (x : GanttProperties) = [ Properties x ]
+        member _.Yield (x : BuilderNode) = [ x ]
 
-        member _.YieldFrom (x : GanttProperties list) = x |> List.map Properties
-
-        member _.Yield (x : Exclusion) = [ Exclusion x ]
-
-        member _.YieldFrom (x : Exclusion list) = x |> List.map Exclusion
+        member _.YieldFrom (x : BuilderNode seq) = x |> List.ofSeq
 
         member _.Combine((x : BuilderNode list), y) = x @ y
 
@@ -189,14 +181,8 @@ module gantt =
             |> Seq.toList
 
 
-        member _.Run(nodes : BuilderNode list) =
-            let props = 
-                nodes 
-                |> Seq.choose (function | Properties p -> Some p | _ -> None)
-                |> Seq.tryLast
-                |> function
-                    | None -> GanttProperties.Default
-                    | Some p -> p
+        member _.Run(nodes : BuilderNode list) =            
+            let getLast chooser = nodes |> Seq.pickBackWithDefault "" chooser
 
             let excludes = 
                 nodes
@@ -216,9 +202,9 @@ module gantt =
                 |> UMap.ofSeq
 
             {
-                GanttChart.Title = props.Title
-                DateFormat = props.DateFormat
-                AxisFormat = props.AxisFormat
+                GanttChart.Title = getLast (function Title x -> Some x | _ -> None)
+                DateFormat = getLast (function DateFormat x -> Some x | _ -> None)
+                AxisFormat = getLast (function AxisFormat x -> Some x | _ -> None)
                 Exclusions = excludes
                 Items = items
                 Sections = sections

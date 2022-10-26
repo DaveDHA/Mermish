@@ -40,7 +40,6 @@
     <Compile Include="PieChart.fs" />
     <Compile Include="GanttChart.fs" />
     <Compile Include="GanttBuilder.fs" />
-    <Compile Include="GanttChartExtensions.fs" />
     <Compile Include="Mermaid.fs" />
     <Compile Include="InteractiveSupport.fs" />
   </ItemGroup>

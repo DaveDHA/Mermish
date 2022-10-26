@@ -15,7 +15,7 @@ type GanttId = string
 type Exclusion = 
 | Monday
 | Tuesday
-| Wendesday
+| Wednesday
 | Thursday
 | Friday
 | Saturday
@@ -46,14 +46,14 @@ module Exclusion =
 // StartOption
 type StartOption = 
 | After of GanttId
-| On of GanttDate
+| At of GanttDate
 | Default
 
 
 module StartOption =
     let Render = function
         | After id -> Some $"after {id}"
-        | On d -> Some d
+        | At d -> Some d
         | Default -> None
 
 
@@ -61,7 +61,7 @@ module StartOption =
 ////////////////////////////////////////////////////////
 // Duration
 type Duration = 
-| Until of GanttDate
+| EndAt of GanttDate
 | Weeks of int
 | Days of int
 | Hours of int
@@ -71,7 +71,7 @@ type Duration =
 
 module Duration =
     let Render = function
-        | Until d -> Some d
+        | EndAt d -> Some d
         | Weeks w -> Some (sprintf "%dw" w)
         | Days d -> Some (sprintf "%dd" d)
         | Hours h -> Some (sprintf "%dh" h)
@@ -122,19 +122,8 @@ module Item =
 
 
     let RenderAll = Seq.map Render
+   
 
-
-    let WithId id item = { item with Id = id }
-
-    let Critical item = { item with IsCritical = true }
-
-    let WithState state item = { item with State = state }
-
-    let Starts start item = { item with StartOption = start }
-
-    let Ends duration item = { item with Duration = duration }
-
-    
 
 ////////////////////////////////////////////////////////
 // Section
@@ -206,40 +195,6 @@ let Default = {
 }
 
 
-let WithTitle title (chart : GanttChart) = { chart with Title = title }
-
-let WithDateFormat df chart = { chart with DateFormat = df }
-
-let WithAxisFormat af chart = { chart with AxisFormat = af }
-
-let AddExclusions exs chart = { chart with Exclusions = chart.Exclusions |> Set.addAll exs }
-
-
-let AddItems items (chart : GanttChart) =
-    { chart with Items = chart.Items |> UMap.addAll (items |> Seq.map (fun i -> i.Id, i)) }
-
-
-let AddSection name items chart = 
-    let items' = items |> Seq.map (fun i -> i.Id, i) |> UMap.ofSeq
-    let section = { Section.Name = name ; Items = items' }
-    { chart with Sections = chart.Sections |> UMap.add section.Name section }
-
-
-let CreateItem itemType duration name = 
-    {
-        Item.Id = ""
-        Name = name
-        ItemType = itemType
-        IsCritical = false
-        State = TaskState.Default
-        StartOption = StartOption.Default
-        Duration = duration
-    }
-
-
-let CreateTask = CreateItem Task 
-
-let CreateMilestone = CreateItem Milestone (Days 1)    
 
 
 
